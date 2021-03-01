@@ -24,3 +24,10 @@ services:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT}
+    secrets:
+      - source: elastic.ca
+        target: /certs/ca.crt
+      - source: apm-server.certificate
+        target: /certs/apm-server.crt
+      - source: apm-server.key
+        target: /certs/apm-server.key

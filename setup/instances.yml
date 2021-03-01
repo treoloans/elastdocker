@@ -14,3 +14,11 @@ instances:
     ip:
       - "127.0.0.1"
       - "96.239.98.133"
+
+  - name: apm-server
+    dns:
+      - apm-server
+      - localhost
+    ip:
+      - "127.0.0.1"
+      - "96.239.98.133"

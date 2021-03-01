@@ -23,6 +23,10 @@ secrets:
     file: ./secrets/certs/kibana/kibana.crt
   kibana.key:
     file: ./secrets/certs/kibana/kibana.key
+  apm-server.certificate:
+    file: ./secrets/certs/apm-server/apm-server.crt
+  apm-server.key:
+    file: ./secrets/certs/apm-server/apm-server.key
 
 services:
   elasticsearch:
