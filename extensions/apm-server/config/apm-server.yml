@@ -1,5 +1,6 @@
 apm-server:
   host: 0.0.0.0:8200
+  secret_token: ${ELASTIC_APM_SECRET_TOKEN}
 
 output.elasticsearch:
   hosts: ["http://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
