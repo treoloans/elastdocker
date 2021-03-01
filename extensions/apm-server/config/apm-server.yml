@@ -6,10 +6,10 @@ output.elasticsearch:
   username: ${ELASTIC_USERNAME}
   password: ${ELASTIC_PASSWORD}
 
-# apm-server.ssl:
-#   enabled: true
-#   certificate: /certs/apm-server.crt
-#   certificate_authorities: /certs/ca.crt
-#   key: /certs/apm-server.key
-#   # Fixme Remove when using signed certificates
-#   client_authentication: 'optional'
+apm-server.ssl:
+  enabled: true
+  certificate: /certs/apm-server.crt
+  certificate_authorities: /certs/ca.crt
+  key: /certs/apm-server.key
+  # Fixme Remove when using signed certificates
+  client_authentication: 'optional'
