@@ -12,5 +12,5 @@ apm-server.ssl:
   certificate: /certs/apm-server.crt
   certificate_authorities: /certs/ca.crt
   key: /certs/apm-server.key
-  # Fixme Remove when using signed certificates
+  # Fixme Remove when we switch to using signed certificates
   client_authentication: 'optional'

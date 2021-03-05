@@ -41,7 +41,7 @@ elk:		    ## Start ELK.
 monitoring:		## Start ELK Monitoring.
 	@docker-compose ${COMPOSE_MONITORING} up -d --build ${ELK_MONITORING}
 
-extensions:		    ## Start ELK Extensions (apm-server).
+extensions:		## Start ELK Extensions (apm-server, etc).
 	@docker-compose ${COMPOSE_EXTENSIONS} up -d --build ${ELK_EXTENSIONS}
 
 nodes:		    ## Start Two Extra Elasticsearch Nodes
@@ -58,6 +58,9 @@ stop:			## Stop ELK and all its extra components.
 
 restart:		## Restart ELK and all its extra components.
 	@docker-compose ${COMPOSE_ALL_FILES} restart ${ELK_ALL_SERVICES}
+
+recreate:		## Recreate ELK and extensions containers
+	@docker-compose ${COMPOSE_ALL_FILES} up -d --force-recreate
 
 rm:				## Remove ELK and all its extra components containers.
 	@docker-compose $(COMPOSE_ALL_FILES) rm -f ${ELK_ALL_SERVICES}
