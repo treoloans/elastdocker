@@ -1,14 +1,17 @@
 .DEFAULT_GOAL:=help
 
-COMPOSE_ALL_FILES := -f docker-compose.yml -f docker-compose.monitor.yml -f docker-compose.tools.yml -f docker-compose.nodes.yml
+EXTENSIONS=./extensions/
+APM_EXTENSION=${EXTENSIONS}/apm-server/
+
+COMPOSE_ALL_FILES := -f docker-compose.yml -f docker-compose.monitor.yml -f ${APM_EXTENSION}/apm-server-compose.yml
 COMPOSE_MONITORING := -f docker-compose.yml -f docker-compose.monitor.yml
-COMPOSE_TOOLS := -f docker-compose.yml -f docker-compose.tools.yml
+COMPOSE_EXTENSIONS := -f docker-compose.yml -f ${APM_EXTENSION}/apm-server-compose.yml
 COMPOSE_NODES := -f docker-compose.yml -f docker-compose.nodes.yml
 ELK_SERVICES   := elasticsearch logstash kibana
 ELK_MONITORING := elasticsearch-exporter logstash-exporter filebeat-cluster-logs
-ELK_TOOLS  := curator elastalert rubban
+ELK_EXTENSIONS  := apm-server
 ELK_NODES := elasticsearch-1 elasticsearch-2
-ELK_MAIN_SERVICES := ${ELK_SERVICES} ${ELK_MONITORING} ${ELK_TOOLS}
+ELK_MAIN_SERVICES := ${ELK_SERVICES} ${ELK_MONITORING} ${ELK_EXTENSIONS}
 ELK_ALL_SERVICES := ${ELK_MAIN_SERVICES} ${ELK_NODES}
 # --------------------------
 
@@ -17,7 +20,7 @@ include .env
 export
 
 # --------------------------
-.PHONY: setup keystore certs all elk monitoring tools build down stop restart rm logs
+.PHONY: setup keystore certs all elk monitoring extensions build down stop restart rm logs
 
 keystore:		## Setup Elasticsearch Keystore, by initializing passwords, and add credentials defined in `keystore.sh`.
 	docker-compose -f docker-compose.setup.yml run --rm keystore
@@ -29,7 +32,7 @@ setup:		    ## Generate Elasticsearch SSL Certs and Keystore.
 	@make certs
 	@make keystore
 
-all:		    ## Start Elk and all its component (ELK, Monitoring, and Tools).
+all:		    ## Start Elk and all its component (ELK, Monitoring, and Extensions).
 	docker-compose ${COMPOSE_ALL_FILES} up -d --build ${ELK_MAIN_SERVICES}
 
 elk:		    ## Start ELK.
@@ -38,8 +41,8 @@ elk:		    ## Start ELK.
 monitoring:		## Start ELK Monitoring.
 	@docker-compose ${COMPOSE_MONITORING} up -d --build ${ELK_MONITORING}
 
-tools:		    ## Start ELK Tools (ElastAlert, Curator).
-	@docker-compose ${COMPOSE_TOOLS} up -d --build ${ELK_TOOLS}
+extensions:		    ## Start ELK Extensions (apm-server).
+	@docker-compose ${COMPOSE_EXTENSIONS} up -d --build ${ELK_EXTENSIONS}
 
 nodes:		    ## Start Two Extra Elasticsearch Nodes
 	@docker-compose ${COMPOSE_NODES} up -d --build ${ELK_NODES}
@@ -52,7 +55,7 @@ down:			## Down ELK and all its extra components.
 
 stop:			## Stop ELK and all its extra components.
 	@docker-compose ${COMPOSE_ALL_FILES} stop ${ELK_ALL_SERVICES}
-	
+
 restart:		## Restart ELK and all its extra components.
 	@docker-compose ${COMPOSE_ALL_FILES} restart ${ELK_ALL_SERVICES}
 
@@ -78,9 +81,9 @@ swarm-deploy-monitoring:
 	@make build
 	@docker stack deploy -c docker-compose.yml -c docker-compose.monitor.yml elastic
 
-swarm-deploy-tools:
+swarm-deploy-extensions:
 	@make build
-	@docker stack deploy -c docker-compose.yml -c docker-compose.tools.yml elastic
+	@docker stack deploy -c docker-compose.yml -c ${APM_EXTENSION}/apm-server-compose.yml elastic
 
 swarm-rm:
 	docker stack rm elastic
